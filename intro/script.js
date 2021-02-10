@@ -2,7 +2,8 @@ const Game = {
     data() {
         return {
             playerName: '',
-            mysteryNumber: 4,
+            gameStarted: false,
+            mysteryNumber: Math.floor(Math.random() * 10) + 1,
             guess: null,
             guesses: [],
             correct: false,
@@ -12,6 +13,12 @@ const Game = {
         addGuess() {
             this.guesses.push(this.guess);
             this.correct = this.guess == this.mysteryNumber;
+        },
+        reset() {
+            this.correct = false;
+            this.mysteryNumber = Math.floor(Math.random() * 10) + 1
+            this.guesses = [];
+            this.guess = null;
         }
     }
 }

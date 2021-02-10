@@ -13,6 +13,16 @@
         [v-cloak] {
             display: none;
         }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .correct {
+            color: green;
+            font-weight: bold;
+        }
     </style>
 </head>
 
@@ -20,20 +30,40 @@
     <h1>Vue.js Intro</h1>
 
     <div id='app' v-cloak>
-        <label>What is your name? <input v-model='playerName' type='text'></label>
-        <p v-if='playerName != ""'>Player name: {{ playerName }}</p>
 
-        <label>
-            I’m thinking of a number between 1 and 10. What do you think it is?
-            <input type='text' v-model='guess'>
-            <button v-on:click='addGuess()'>Submit guess</button>
-        </label>
+        <div v-if='!gameStarted'>
+            <p>Welcome to our mystery number game.
+                <label>To get started, tell us your name: <input v-model='playerName' type='text'></label>
+                <button v-on:click='gameStarted = true'>Let’s play!</button>
+        </div>
+        <div v-else>
 
-        <ul>
-            <li v-for='thisGuess in guesses'>{{ thisGuess }}</li>
-        </ul>
+            <div v-if='!correct'>
+                <p>
+                    Hi, {{ playerName }}.
+                    I’m thinking of a number between 1 and 10.
+                    What do you think it is?
+                </p>
 
-        <p v-if='correct'>You guessed the mystery number!</p>
-    </div>
+                <label>
+                    Your guess:
+                    <input type='text' v-model='guess'>
+                </label>
+
+                <button v-on:click='addGuess()'>Submit guess</button>
+            </div>
+
+            <p v-if='correct' class='correct'>You guessed the mystery number!</p>
+
+            <button v-if='correct' v-on:click='reset'>Play again</button>
+
+            <div v-if='guesses.length > 0'>
+                <p>Your Guesses:</p>
+                <ul>
+                    <li v-for='thisGuess in guesses'>{{ thisGuess }}</li>
+                </ul>
+            </div>
+
+        </div>
 
 </html>
