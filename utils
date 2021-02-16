@@ -1,5 +1,4 @@
-version=2021-02-12-12-19-00
-
+version=2021-02-12-14-49-46
 #
 #
 # Main
@@ -146,10 +145,17 @@ main() {
         echo "  Production commands are not available until you update PRODUCTION_SSH in .config"
     fi
 
-    dump "ENTER A LETTER TO CHOOSE YOUR COMMAND (or enter q to quit): "
+    # If argument passed, that's the command to run
+    if [[ $1 ]]; then
+        commandToRun=$1
+        dump "Command to run: $commandToRun"
+    # Otherwse, ask for command to run
+    else 
+        dump "ENTER A LETTER TO CHOOSE YOUR COMMAND (or enter q to quit): "
+        read commandToRun
+    fi
 
-    read n
-    case $n in
+    case $commandToRun in
     a) update;;
     b) github_sync;;
     c) $LOCAL_CMD_VIEW_APACHE_ERROR_LOG;;
@@ -163,7 +169,7 @@ main() {
     k) production_edit_virtual_hosts;;
     l) production_restart_apache;;
     
-    q) exit;;
+    q) echo "Exiting."; exit;;
     *) echo "Invalid option";;
     esac
 }
@@ -265,4 +271,4 @@ dump () {
 #
 # Run
 #
-main
+main $1

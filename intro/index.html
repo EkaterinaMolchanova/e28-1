@@ -30,11 +30,13 @@
     <h1>Vue.js Intro</h1>
 
     <div id='app' v-cloak>
-
         <div v-if='!gameStarted'>
-            <p>Welcome to our mystery number game.
-                <label>To get started, tell us your name: <input v-model='playerName' type='text'></label>
-                <button v-on:click='gameStarted = true'>Let’s play!</button>
+            <p>Welcome to our mystery number game.</p>
+            <label>To get started, tell us your name:
+                <input v-model='playerName' type='text'
+                       v-on:keyup.enter='gameStarted = true'>
+            </label>
+            <button v-on:click='gameStarted = true'>Let’s play!</button>
         </div>
         <div v-else>
 
@@ -47,10 +49,10 @@
 
                 <label>
                     Your guess:
-                    <input type='text' v-model='guess'>
+                    <input type='text' v-model='guess' v-on:keyup.enter='addGuess'>
                 </label>
 
-                <button v-on:click='addGuess()'>Submit guess</button>
+                <button v-on:click='addGuess'>Submit guess</button>
             </div>
 
             <p v-if='correct' class='correct'>You guessed the mystery number!</p>
@@ -58,9 +60,18 @@
             <button v-if='correct' v-on:click='reset'>Play again</button>
 
             <div v-if='guesses.length > 0'>
-                <p>Your Guesses:</p>
+                <p>High Guesses:</p>
                 <ul>
-                    <li v-for='thisGuess in guesses'>{{ thisGuess }}</li>
+                    <template v-for='(thisGuess) in guesses'>
+                        <li v-if='thisGuess > mysteryNumber'>{{ thisGuess }}</li>
+                    </template>
+                </ul>
+
+                <p>Low Guesses:</p>
+                <ul>
+                    <template v-for='(thisGuess) in guesses'>
+                        <li v-if='thisGuess < mysteryNumber'>{{ thisGuess }}</li>
+                    </template>
                 </ul>
             </div>
 
