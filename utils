@@ -1,4 +1,4 @@
-version=2021-02-12-14-49-46
+version=2021-02-18-11-08-50
 #
 #
 # Main
@@ -137,10 +137,11 @@ main() {
     echo ""
     echo "PRODUCTION"
     if [ -n "$PRODUCTION_SSH" ]; then
-        echo "  i) Sync local code with Github and production"
-        echo "  j) SSH in your production server ($PRODUCTION_SSH) and navigate to $PROD_DIR_DOCUMENT_ROOT/$repository"
-        echo "  k) Edit VirtualHosts config file ($PROD_FILE_VHOSTS)"
-        echo "  l) Restart Apache"
+        echo "  i) Full deploy: Sync local code with Github and pull changes to production"
+        echo "  j) Pull latest changes from Github to production"
+        echo "  k) SSH in your production server ($PRODUCTION_SSH) and navigate to $PROD_DIR_DOCUMENT_ROOT/$repository"
+        echo "  l) Edit VirtualHosts config file ($PROD_FILE_VHOSTS)"
+        echo "  m) Restart Apache"
     else
         echo "  Production commands are not available until you update PRODUCTION_SSH in .config"
     fi
@@ -149,25 +150,26 @@ main() {
     if [[ $1 ]]; then
         commandToRun=$1
         dump "Command to run: $commandToRun"
-    # Otherwse, ask for command to run
+    # Otherwise, ask for command to run
     else 
         dump "ENTER A LETTER TO CHOOSE YOUR COMMAND (or enter q to quit): "
         read commandToRun
     fi
 
     case $commandToRun in
-    a) update;;
-    b) github_sync;;
-    c) $LOCAL_CMD_VIEW_APACHE_ERROR_LOG;;
-    d) $LOCAL_CMD_EDIT_APACHE_CONFIG;;
-    e) $LOCAL_CMD_EDIT_VHOSTS;;
-    f) $LOCAL_CMD_READ_VHOSTS;;
-    g) $LOCAL_CMD_EDIT_HOSTS;;
-    h) $LOCAL_CMD_RESTART_APACHE;;
-    i) production_deploy;;
-    j) production_ssh;;
-    k) production_edit_virtual_hosts;;
-    l) production_restart_apache;;
+    a) update; echo "Done.";;
+    b) github_sync; echo "Done.";;
+    c) $LOCAL_CMD_VIEW_APACHE_ERROR_LOG; echo "Opened $LOCAL_FILE_APACHE_ERROR_LOG.";;
+    d) $LOCAL_CMD_EDIT_APACHE_CONFIG; echo "Opened $LOCAL_FILE_APACHE_CONFIG.";;
+    e) $LOCAL_CMD_EDIT_VHOSTS; echo "Opened $LOCAL_FILE_VHOSTS.";;
+    f) $LOCAL_CMD_READ_VHOSTS; echo "Done.";;
+    g) $LOCAL_CMD_EDIT_HOSTS; echo "Opened $LOCAL_FILE_HOSTS.";;
+    h) $LOCAL_CMD_RESTART_APACHE; echo "Done.";;
+    i) production_deploy; echo "Done.";;
+    j) production_pull; echo "Done.";;
+    k) production_ssh; echo "Done.";;
+    l) production_edit_virtual_hosts; echo "Done.";;
+    m) echo "Restarting apache on production..."; production_restart_apache; echo "Done.";;
     
     q) echo "Exiting."; exit;;
     *) echo "Invalid option";;
@@ -199,7 +201,11 @@ github_sync() {
 
 production_deploy() {
     github_sync
-    ssh -t $PRODUCTION_SSH "cd $PRODUCTION_DOC_ROOT/$repository; git pull"
+    ssh -t $PRODUCTION_SSH "cd $PROD_DIR_DOCUMENT_ROOT/$repository; git pull"
+}
+
+production_pull() {
+    ssh -t $PRODUCTION_SSH "cd $PROD_DIR_DOCUMENT_ROOT/$repository; git pull"
 }
 
 production_edit_virtual_hosts() {
@@ -232,26 +238,34 @@ version() {
     utils_from_source_array=(${utils_from_source[@]})
     latest_version="${utils_from_source_array[0]}"
 
-    # Remove "version=" from the line, leaving just the version #
-    latest_version=${latest_version/version=/} 
+    # Check the first line includes the string `version`
+    # If it does not, it means we were unable to successfully grab the latest version
+    # and we should not prompt for an update
+    if [[ "$latest_version" == *"version"* ]]; then
+       
+        can_update=true;
 
-    if [[ "$version" != $latest_version ]]; then
-        echo ""
-        echo "================= WARNING ================="
-        echo "This script is currently at version $version"
-        echo "A newer version ($latest_version) is available."
-        echo "Choose option a to update"
-        echo "==========================================="
+        # Remove "version=" from the line, leaving just the version #
+        latest_version=${latest_version/version=/} 
+
+        if [[ "$version" != $latest_version ]]; then
+            echo ""
+            echo "================= WARNING ================="
+            echo "This script is currently at version $version"
+            echo "A newer version ($latest_version) is available."
+            echo "Choose option a to update"
+            echo "==========================================="
+        fi
     fi
 }
 
 update() {
-    if [[ ! -z "$utils_from_source" ]]; then
+    if [[ ! -z "$utils_from_source" && $can_update ]]; then
         echo "$utils_from_source" > utils
         echo "Update complete ✓ "
         exit;
     else 
-        echo "Update failed."
+        echo "Update failed. Please create a post in the forum or email susanbuck@fas.harvard.edu for assistance troubleshooting this."
     fi
 }
 
