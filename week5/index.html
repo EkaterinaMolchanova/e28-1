@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang='en'>
+
+<head>
+    <title>Week 5 Examples</title>
+    <meta charset='utf-8'>
+    <link href=data:, rel=icon>
+
+    <script src='https://unpkg.com/vue@next'></script>
+    <script src='script.js' defer></script>
+
+    <style>
+        [v-cloak] {
+            display: none
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <h1>Week 5 Examples</h1>
+
+    <div id='app' v-cloak>
+
+        <label for='answer'>What is {{ randomNumber1 }} + {{ randomNumber2 }}? </label>
+        <input type='text' id='answer' v-model='answer' v-on:keyup.enter='submitAnswer'>
+
+    </div>
+
+</body>
+
+</html>
