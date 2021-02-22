@@ -4,17 +4,17 @@ const ShoppingList = {
             item: '',
             qty: '',
             items: [],
-            itemsCount: 0
+            itemsCount: 0,
         }
     },
     methods: {
         addItem() {
 
-            // Don't create the newItem object via a data property because you want each new item to be unique
+            // Don’t create the newItem object via a data property because you want each new item to be unique
             // this.newItem.name = this.item;
             // this.newItem.qty = this.qty;
 
-            // Instead, you could create a new local object so it's unique each time:
+            // Instead, you could create a new local object so it’s unique each time:
             // let newItem = {}
             // newItem.name = this.item;
             // newItem.qty = this.qty;
@@ -22,7 +22,7 @@ const ShoppingList = {
             // Or, use the new object shorthand as I've done here:
             this.items.push({
                 name: this.item,
-                qty: this.qty
+                qty: this.qty,
             });
 
             this.itemsCount += this.qty;
@@ -32,7 +32,13 @@ const ShoppingList = {
             this.qty = '';
         },
         removeItem(name) {
-            this.items = this.items.filter(item => item.name != name);
+            this.items = this.items.filter(item => {
+                if (item.name == name) {
+                    this.itemsCount -= item.qty;
+                }
+
+                return item.name != name;
+            });
         }
     }
 }
