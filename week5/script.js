@@ -7,13 +7,17 @@ let Example = {
             answer: '',
             imageSource: null,
             imageAlt: null,
-            feedback: null,
             correct: null,
             feedbackClass: null,
             showHint: false,
             statements: [],
+            statementsFeedback: {},
             level: '',
-            abc: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus in pulvinar libero. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.'
+            bonusChallenges: {
+                oddNumber: 'Is the answer an odd number?',
+                greaterThan10: 'Is the answer greater than 10?',
+                divisibleBy3: 'Is the answer evenly divisible by 3?'
+            }
         }
     },
     methods: {
@@ -23,16 +27,33 @@ let Example = {
             if (this.answer === correctAnswer) {
                 this.imageSource = 'happy';
                 this.imageAlt = 'Happy smiley face';
-                this.feedback = 'You got it correct!';
                 this.correct = true;
                 this.feedbackClass = 'correct';
             } else {
                 this.imageSource = 'sad';
                 this.imageAlt = 'Sad frowny face';
-                this.feedback = 'Incorrect - try again.';
                 this.correct = false;
                 this.feedbackClass = 'incorrect';
             }
+
+            Object.keys(this.bonusChallenges).forEach((key) => {
+
+                let isTrue = null;
+
+                if (key == 'oddNumber') {
+                    isTrue = this.answer % 2 != 0;
+                } else if (key == 'greaterThan10') {
+                    isTrue = this.answer > 10;
+                } else if (key == 'divisibleBy3') {
+                    isTrue = this.answer % 3 == 0;
+                }
+
+                let feedback = isTrue && this.statements.includes(key) || !isTrue && !this.statements.includes(key);
+
+                this.statementsFeedback[key] = [isTrue, feedback];
+            });
+
+
         }
     },
 }
