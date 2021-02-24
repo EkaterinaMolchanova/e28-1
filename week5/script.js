@@ -2,8 +2,7 @@ let Example = {
     data() {
         return {
             playerName: '',
-            randomNumber1: Math.floor((Math.random() * 10) + 1),
-            randomNumber2: Math.floor((Math.random() * 10) + 1),
+            level: '',
             answer: '',
             imageSource: null,
             imageAlt: null,
@@ -12,15 +11,68 @@ let Example = {
             showHint: false,
             statements: [],
             statementsFeedback: {},
-            level: '',
             bonusChallenges: {
                 oddNumber: 'Is the answer an odd number?',
                 greaterThan10: 'Is the answer greater than 10?',
                 divisibleBy3: 'Is the answer evenly divisible by 3?'
-            }
+            },
+            user: {},
+            firstName: '',
+            lastName: '',
+            phoneNumber: '',
         }
     },
+    computed: {
+        randomNumber1() {
+            return this.getRandomNumber(this.level);
+        },
+        randomNumber2() {
+            return this.getRandomNumber(this.level);
+        },
+        fullName() {
+            return this.firstName + ' ' + this.lastName;
+        },
+        displayPhoneNumber() {
+            let cleaned = ('' + this.phoneNumber).replace(/\D/g, '')
+            let match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/)
+            if (match) {
+                return '(' + match[1] + ') ' + match[2] + '-' + match[3]
+            }
+            return null
+        }
+    },
+    mounted() {
+        //console.log('mounted hook was triggered');
+    },
+    created() {
+        this.loadUser();
+    },
     methods: {
+        getRandomNumber(level) {
+            // Default: Easy
+            let min = 1;
+            let max = 10;
+
+            if (level == 'medium') {
+                min = 50;
+                max = 100;
+            } else if (level == 'hard') {
+                min = 1000;
+                max = 5000
+            }
+
+            return Math.floor((Math.random() * max) + min)
+        },
+        getFullName() {
+            return this.firstName + ' ' + this.lastName;
+        },
+        loadUser() {
+            fetch('https://api.mocki.io/v1/ce5f60e2')
+                .then(response => response.json())
+                .then(data => {
+                    this.user = data;
+                });
+        },
         submitAnswer() {
             let correctAnswer = this.randomNumber1 + this.randomNumber2;
 

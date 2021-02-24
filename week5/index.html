@@ -50,7 +50,6 @@
     <h1>Week 5 Examples</h1>
 
     <div id='app' v-cloak>
-
         <!-- 
         <div>
             <p>Choose a difficulty level:</p>
@@ -66,17 +65,17 @@
         </div> 
         -->
 
-        <div v-if='!level'>
+        <div>
             <p>Choose a difficulty level:</p>
             <select v-model='level'>
-                <option value=''>Chose one...</option>
+                <option value=''>Choose one...</option>
                 <option value='easy'>Easy</option>
                 <option value='medium'>Medium</option>
                 <option value='hard'>Hard</option>
             </select>
         </div>
 
-        <div v-else>
+        <div v-if='level'>
             <h2>Question</h2>
             <label for='answer'>
                 What is {{ randomNumber1 }} + {{ randomNumber2 }}? </label>

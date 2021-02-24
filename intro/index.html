@@ -69,9 +69,7 @@
 
                 <p>Low Guesses:</p>
                 <ul>
-                    <template v-for='(thisGuess) in guesses'>
-                        <li v-if='thisGuess < mysteryNumber'>{{ thisGuess }}</li>
-                    </template>
+                    <li v-for='thisGuess in lowGuesses'>{{ thisGuess }}</li>
                 </ul>
             </div>
 

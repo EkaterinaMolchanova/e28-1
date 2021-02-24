@@ -21,6 +21,13 @@ const Game = {
             ]
         }
     },
+    computed: {
+        lowGuesses() {
+            return this.guesses.filter(guess => {
+                return guess < this.mysteryNumber
+            })
+        }
+    },
     methods: {
         addGuess(event) {
             console.log(event);
