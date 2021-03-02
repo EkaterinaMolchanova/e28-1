@@ -13,6 +13,13 @@
         [v-cloak] {
             display: none
         }
+
+        #history div {
+            background-color: #eee;
+            padding: 10px;
+            margin: 10px 0;
+            width: 300px;
+        }
     </style>
 
 </head>
@@ -21,8 +28,32 @@
     <h1>Week 6 examples</h1>
 
     <div id='app' v-cloak>
+        <h2>Game history</h2>
+        <div id='history'>
+            <round-detail
+                          v-for='round in rounds'
+                          v-bind:key='round.number'
+                          v-bind:number='round.number'
+                          v-bind:winner='round.winner'
+                          v-bind:choice='round.choice'
+                          v-on:delete-round='deleteRound($event)'>
 
+                <template v-slot:coin>The coin landed on {{ round.coin }}</template>
+            </round-detail>
+        </div>
     </div>
+
+    <script id='round-detail' type='text/x-template'>
+        <div>
+            <ul>
+                <li>Round #: {{ number }}</li>
+                <li>Winner: {{ winner }}</li>
+                <li><slot name='coin'></slot></li>
+                <li>The player's choice was {{ choice }}</li>
+            </ul>
+            <button v-on:click='$emit("delete-round", number)'>Delete from history</button>
+        </div>
+    </script>
 
 </body>
 
