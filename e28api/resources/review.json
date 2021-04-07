@@ -1,0 +1,29 @@
+{
+    "permission_level": 0,
+    "fields": {
+        "content": {
+            "type": "text",
+            "validators": [
+                "required",
+                "min:100",
+                "max:1000"
+            ]
+        },
+        "rating": {
+            "type": "integer",
+            "validators": [
+                "required",
+                "numeric",
+                "min:1",
+                "max:5"
+            ]
+        },
+        "product_id": {
+            "type": "integer",
+            "validators": [
+                "required",
+                "numeric"
+            ]
+        }
+    }
+}
