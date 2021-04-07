@@ -19,29 +19,43 @@
             </ul>
         </nav>
 
-        <router-view></router-view>
+        <router-view
+            v-bind:products="products"
+            v-on:update-products="loadProducts"
+        ></router-view>
     </div>
 </template>
 
 <script>
-import { products } from "@/common/products.js";
+import { axios } from "@/common/app.js";
 
 export default {
     name: "App",
     data() {
         return {
-            products: products,
+            products: [],
 
             /* Store links in an array to maintain order */
-            links: ["home", "products", "categories"],
+            links: ["home", "products", "add a product", "categories"],
 
-            /* Map links to the appropriate component */
+            /* Map links to  the appropriate component */
             paths: {
                 home: "/",
                 products: "/products",
+                "add a product": "/product/new",
                 categories: "/categories",
             },
         };
+    },
+    mounted() {
+        this.loadProducts();
+    },
+    methods: {
+        loadProducts() {
+            axios.get("product").then((response) => {
+                this.products = response.data.product;
+            });
+        },
     },
 };
 </script>
