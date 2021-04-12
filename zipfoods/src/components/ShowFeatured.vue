@@ -1,6 +1,7 @@
 <template>
     <div id="show-featured">
         <h2>Featured Products</h2>
+
         <ul class="clean-list">
             <li v-for="product in featuredProducts" v-bind:key="product.id">
                 {{ product.name }}
@@ -10,18 +11,17 @@
 </template>
 
 <script>
-import { products } from "@/common/products.js";
-
 export default {
     props: {
         category: {
             type: String,
         },
+        products: {
+            type: Array,
+        },
     },
     data() {
-        return {
-            products: products,
-        };
+        return {};
     },
     computed: {
         featuredProducts() {
