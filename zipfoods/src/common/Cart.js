@@ -1,3 +1,5 @@
+import { reactive } from 'vue'
+
 export default class Cart {
 
     /**
@@ -7,8 +9,12 @@ export default class Cart {
         // Extract JSON cart string from local storage
         let cart = localStorage.getItem('cart');
 
-        // Parse JSON cart String to `items` object
-        this.items = (cart) ? JSON.parse(cart) : [];
+        // Parse JSON cart String to `items` Array
+        let items = (cart) ? JSON.parse(cart) : [];
+
+        // Make sure `items` is reactive so as it gets 
+        // updated, changes will be reflected in our interface
+        this.items = reactive(items);
     }
 
     /**
