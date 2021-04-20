@@ -26,7 +26,9 @@ export default {
     computed: {
         featuredProducts() {
             return this.products.filter((product) => {
-                return product.categories.includes(this.category);
+                if (product.categories) {
+                    return product.categories.includes(this.category);
+                }
             }, this.category);
         },
     },
