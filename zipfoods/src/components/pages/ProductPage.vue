@@ -12,12 +12,22 @@
                 v-bind:product="product"
                 v-bind:detailed="true"
             ></show-product>
+
+            <button v-on:click="addToCart">Add to cart</button>
+
+            <transition name="fade">
+                <div class="alert" v-if="addConfirmation">
+                    This product was added to your cart!
+                </div>
+            </transition>
         </div>
     </div>
 </template>
 
 <script>
 import ShowProduct from "@/components/ShowProduct.vue";
+
+import { cart } from "@/common/app.js";
 
 export default {
     components: {
@@ -33,7 +43,9 @@ export default {
         },
     },
     data() {
-        return {};
+        return {
+            addConfirmation: false,
+        };
     },
     computed: {
         product() {
@@ -43,6 +55,21 @@ export default {
         },
         productNotFound() {
             return this.product == null;
+        },
+    },
+    methods: {
+        addToCart() {
+            console.log(this.product.id);
+
+            cart.add(this.product.id);
+
+            this.$store.commit("setCartCount", cart.count());
+
+            this.addConfirmation = true;
+
+            setTimeout(() => {
+                this.addConfirmation = false;
+            }, 3000);
         },
     },
 };
