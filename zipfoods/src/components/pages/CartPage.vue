@@ -17,7 +17,6 @@
 import { cart } from "@/common/app.js";
 
 export default {
-    props: ["products"],
     data() {
         return {
             items: [],
@@ -26,6 +25,9 @@ export default {
     computed: {
         productsLoaded() {
             return this.products.length > 0;
+        },
+        products() {
+            return this.$store.state.products;
         },
     },
     mounted() {

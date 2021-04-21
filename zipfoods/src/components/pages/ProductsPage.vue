@@ -24,14 +24,14 @@ export default {
     components: {
         "show-product": ShowProduct,
     },
-    props: {
-        products: {
-            type: Array,
-            default: null,
-        },
-    },
+    props: {},
     data() {
         return {};
+    },
+    computed: {
+        products() {
+            return this.$store.state.products;
+        },
     },
 };
 </script>

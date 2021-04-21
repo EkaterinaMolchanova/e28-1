@@ -37,10 +37,6 @@ export default {
         id: {
             type: String,
         },
-        products: {
-            type: Array,
-            default: null,
-        },
     },
     data() {
         return {
@@ -49,12 +45,13 @@ export default {
     },
     computed: {
         product() {
-            return this.products.filter((product) => {
-                return product.id == this.id;
-            }, this.id)[0];
+            return this.$store.getters.getProductById(this.id);
         },
         productNotFound() {
             return this.product == null;
+        },
+        products() {
+            return this.$store.state.products;
         },
     },
     methods: {
