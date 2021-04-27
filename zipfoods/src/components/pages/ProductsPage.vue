@@ -7,6 +7,7 @@
                 v-for="product in products"
                 v-bind:to="'/product/' + product.id"
                 v-bind:key="product.id"
+                data-test="product-link"
             >
                 <show-product
                     v-bind:product="product"

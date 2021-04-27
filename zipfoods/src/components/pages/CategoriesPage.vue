@@ -2,7 +2,11 @@
     <div id="categories-page">
         <h2>Categories</h2>
         <ul class="clean-list">
-            <li v-for="(category, id) in categories" v-bind:key="id">
+            <li
+                v-for="(category, id) in categories"
+                v-bind:key="id"
+                data-test="category-name"
+            >
                 {{ category }}
             </li>
         </ul>

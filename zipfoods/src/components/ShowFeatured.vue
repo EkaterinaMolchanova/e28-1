@@ -3,7 +3,11 @@
         <h2>Featured Products</h2>
 
         <ul class="clean-list">
-            <li v-for="product in featuredProducts" v-bind:key="product.id">
+            <li
+                v-for="product in featuredProducts"
+                v-bind:key="product.id"
+                data-test="featured-product"
+            >
                 {{ product.name }}
             </li>
         </ul>
