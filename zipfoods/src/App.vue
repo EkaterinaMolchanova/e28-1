@@ -68,8 +68,6 @@ export default {
         this.loadProducts();
 
         this.$store.commit("setCartCount", cart.count());
-
-        this.$store.dispatch("authUser");
     },
     methods: {
         loadProducts() {

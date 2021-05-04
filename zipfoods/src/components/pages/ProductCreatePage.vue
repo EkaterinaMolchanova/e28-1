@@ -11,6 +11,7 @@
                 v-model="product.name"
                 id="name"
                 data-test="product-name-input"
+                v-on:blur="validate"
             />
             <small class="form-help">Min: 3, Max: 100</small>
             <error-field
@@ -24,6 +25,7 @@
                 v-model="product.sku"
                 id="sku"
                 data-test="product-sku-input"
+                v-on:blur="validate"
             />
             <small class="form-help"
                 >Min: 3, Max: 100. Letters and dashes only.</small
@@ -39,6 +41,7 @@
                 v-model="product.price"
                 id="price"
                 data-test="product-price-input"
+                v-on:blur="validate"
             />
             <small class="form-help">Enter a decimal value number</small>
             <error-field
@@ -52,6 +55,7 @@
                 v-model="product.available"
                 id="available"
                 data-test="product-available-input"
+                v-on:blur="validate"
             />
             <small class="form-help">Enter a whole number</small>
             <error-field
@@ -65,6 +69,7 @@
                 v-model="product.weight"
                 id="weight"
                 data-test="product-weight-input"
+                v-on:blur="validate"
             />
             <error-field
                 v-if="errors && 'weight' in errors"
@@ -86,6 +91,7 @@
                 v-model="product.description"
                 id="description"
                 data-test="product-description-textarea"
+                v-on:blur="validate"
             ></textarea>
             <small class="form-help">Min:100</small>
             <error-field
@@ -117,6 +123,7 @@
 <script>
 import { axios } from "@/common/app.js";
 import ErrorField from "@/components/ErrorField.vue";
+import Validator from "validatorjs";
 
 export default {
     components: {
@@ -139,29 +146,51 @@ export default {
         };
     },
     methods: {
-        addProduct() {
-            axios.post("/product", this.product).then((response) => {
-                if (response.data.errors) {
-                    this.errors = response.data.errors;
-                    this.showConfirmation = false;
-                } else {
-                    this.product = {
-                        name: "",
-                        slug: "",
-                        price: "",
-                        available: "",
-                        weight: "",
-                        perishable: false,
-                        description: "",
-                    };
-
-                    this.$emit("update-products");
-                    this.showConfirmation = true;
-
-                    // Fade out confirmation after 3 seconds
-                    setTimeout(() => (this.showConfirmation = false), 3000);
-                }
+        validate() {
+            let validator = new Validator(this.product, {
+                name: "required|between:3,100",
+                sku: "required|between:3,100|alpha_dash",
+                price: "required|numeric",
+                available: "required|numeric",
+                weight: "required|numeric",
+                description: "required|min:100",
             });
+
+            if (validator.fails()) {
+                // Note here how we’re capturing our errors in the same `this.errors`
+                // data property we used when we got errors from the server
+                this.errors = validator.errors.all();
+            } else {
+                this.errors = null;
+            }
+
+            return validator.passes();
+        },
+        addProduct() {
+            if (this.validate()) {
+                axios.post("/product", this.product).then((response) => {
+                    if (response.data.errors) {
+                        this.errors = response.data.errors;
+                        this.showConfirmation = false;
+                    } else {
+                        this.product = {
+                            name: "",
+                            slug: "",
+                            price: "",
+                            available: "",
+                            weight: "",
+                            perishable: false,
+                            description: "",
+                        };
+
+                        this.$emit("update-products");
+                        this.showConfirmation = true;
+
+                        // Fade out confirmation after 3 seconds
+                        setTimeout(() => (this.showConfirmation = false), 3000);
+                    }
+                });
+            }
         },
     },
 };

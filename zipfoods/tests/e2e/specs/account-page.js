@@ -27,5 +27,4 @@ describe('Account Page', () => {
         // We know logout works if we see the login button again
         cy.get('[data-test="login-button"]').should('exist');
     })
-
 })

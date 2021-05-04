@@ -3,7 +3,7 @@ import { axios } from "@/common/app.js";
 
 // Only load the createLogger plugin when in development mode
 const debug = process.env.NODE_ENV !== 'production';
-const plugins = debug ? [createLogger({})] : [];
+const plugins = debug && 1 == 2 ? [createLogger({})] : [];
 
 export const store = createStore({
     plugins,
@@ -36,10 +36,16 @@ export const store = createStore({
             });
         },
         authUser(context) {
-            axios.post('auth').then((response) => {
-                if (response.data.authenticated) {
-                    context.commit('setUser', response.data.user);
-                }
+            return new Promise((resolve) => {
+                axios.post('auth').then((response) => {
+                    if (response.data.authenticated) {
+                        context.commit('setUser', response.data.user);
+                    } else {
+                        context.commit('setUser', false);
+                    }
+
+                    resolve();
+                });
             });
         },
     },

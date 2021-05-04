@@ -32,7 +32,6 @@
 
 <script>
 import ShowProduct from "@/components/ShowProduct.vue";
-
 import { cart } from "@/common/app.js";
 
 export default {

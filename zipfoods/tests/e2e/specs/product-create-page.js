@@ -3,7 +3,7 @@ describe('Product Create Page', () => {
     // Test product
     const product = {
         name: 'My New Product',
-        // Append a Unix timestamp to the end of the slug, ensuring it's a unique value
+        // Append a Unix timestamp to the end of the slug, ensuring it’s a unique value
         sku: 'my-new-product-' + Date.now(),
         description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus in pulvinar libero. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.',
         available: 10,
@@ -13,13 +13,13 @@ describe('Product Create Page', () => {
 
     it('adds a new product', () => {
 
-        // First we have to login, because only auth'd users can add products
+        // First we have to login, because only auth’d users can add products
         // Login is a custom command defined in /tests/e2e/support/commands.js
         // Ref: https://docs.cypress.io/api/cypress-api/custom-commands.html
         cy.login();
 
         // Go to the "Add a product page"
-        cy.get('[data-test="nav-link-add a product"]').click();
+        cy.visit('/product/new');
 
         // Enter the details for a new product
         cy.get('[data-test=product-name-input]').clear().type(product.name);
@@ -41,12 +41,29 @@ describe('Product Create Page', () => {
         cy.contains(product.name);
     });
 
-    it('shows error messages if new product data is invalid', () => {
+    it('shows error messages when blurring off a field', () => {
 
         cy.login();
 
         // Go to the "Add a product page"
-        cy.get('[data-test="nav-link-add a product"]').click();
+        cy.visit('/product/new');
+
+        // Make sure product name input is blank
+        cy.get('[data-test=product-name-input]').clear();
+
+        // Click on the next field to trigger the client-side validation
+        cy.get('[data-test=product-sku-input]').click();
+
+        // Assert we see validation feedback
+        cy.contains("The name field is required.");
+    });
+
+    it('shows error messages if the sku is already taken', () => {
+
+        cy.login();
+
+        // Go to the "Add a product page"
+        cy.visit('/product/new');
 
         // Try a SKU we know is taken
         cy.get('[data-test=product-sku-input]').clear().type('driscolls-strawberries');

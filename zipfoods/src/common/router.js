@@ -4,6 +4,12 @@ import { store } from '@/common/store';
 // Define all the routes of our application
 const routes = [
     {
+        path: '/practice',
+        // Rather than having to have separate import statements at the top of this page for each component
+        // Here’s a simple way we can directly make our components available
+        component: () => import('@/components/pages/PracticePage.vue'),
+    },
+    {
         path: '/',
         // Rather than having to have separate import statements at the top of this page for each component
         // Here’s a simple way we can directly make our components available
@@ -55,20 +61,33 @@ const router = createRouter({
 
 // beforeEach provides a way to execute some code before a route is resolved
 // Ref: https://router.vuejs.org/guide/advanced/navigation-guards.html
-router.beforeEach(async (to, from, next) => {
+router.beforeEach(async (to) => {
 
     // Exact the meta information from our routes
     // Ref: https://router.vuejs.org/guide/advanced/meta.html#route-meta-fields
     const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
 
-    if (requiresAuth && !store.state.user) {
-        // If they’re trying to access a requiresAuth route and they’re not logged in, 
-        // they get sent to "Access Denied" page
-        next('/denied');
+    // Put the “decide what to do” code into a method so we can wait to invoke it
+    // once we have the user data
+    const decide = (user) => {
+        if (requiresAuth && !user) {
+            // If they’re trying to access a requiresAuth route and they’re not logged in, 
+            // they get sent to “Access Denied” page
+            return '/denied';
+        } else {
+            // Otherwise, allow them to intended destination
+            return true;
+        }
     }
-    else {
-        // In all other circumstances, send them to the route they requested
-        next();
+
+    // If we don’t have the user yet, dispatch our Vuex authUser action
+    if (store.state.user === null) {
+        let authUser = await store.dispatch('authUser');
+        if (authUser !== null) {
+            return decide(store.state.user);
+        }
+    } else {
+        return decide(store.state.user);
     }
 });
 

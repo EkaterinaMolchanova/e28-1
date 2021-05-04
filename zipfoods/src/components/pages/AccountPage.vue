@@ -108,7 +108,7 @@ export default {
         logout() {
             axios.post("logout").then((response) => {
                 if (response.data.success) {
-                    this.$store.commit("setUser", null);
+                    this.$store.commit("setUser", false);
                 }
             });
         },
