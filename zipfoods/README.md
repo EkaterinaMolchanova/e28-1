@@ -1,24 +1,21 @@
-# zipfoods
+# Project 3
++ By: Susan Buck
++ Production URL: <http://e28zipfoods.hesweb.xyz>
 
-## Project setup
-```
-npm install
-```
+## Outside resources
+n/a
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+## Notes for instructor
+n/a
 
-### Compiles and minifies for production
-```
-npm run build
-```
+## How is authentication being used in your application?
++ Only logged in users can utilize the “Add a product” feature - restricted via route guard and also on the server
++ “Favorites” feature is connected to users
 
-### Lints and fixes files
-```
-npm run lint
-```
+## What data entities of your application are being managed via Vuex?
++ User
++ Cart count
++ Products
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+## E2E Testing screenshot
+![ZipFoods passing E2E tests](https://raw.githubusercontent.com/susanBuck/e28/main/zipfoods/e2e-tests.png)
